@@ -8,10 +8,13 @@ Projeto realizado na OmniStack
 
 ```
 git clone https://github.com/leoopl/Tindev.git
-
+../backend
 yarn dev
 or
 node src/server.js
+
+../frontend
+yarn start
 ```
 
 ## 💻 Feito Com:
