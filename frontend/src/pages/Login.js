@@ -18,6 +18,8 @@ export default function Login() {
 		navigate(`/dev/${_id}`);
 	}
 
+	//TODO: lidar com usuarios inexistentes e sem nome
+	//FIXME: duplicação de usuario por case sensitive
 	return (
 		<div className="login-container">
 			<form onSubmit={handleSubmit}>

@@ -8,12 +8,20 @@ Projeto realizado na OmniStack
 
 ```
 git clone https://github.com/leoopl/Tindev.git
+
 ../backend
 yarn dev
 or
 node src/server.js
 
 ../frontend
+yarn start
+
+../mobile
+Emulador aberto ou celular conectado
+adb devices (confirmar devices conectados)
+adb reverse tcp:3333 tcp:3333 (direcionando rota para localhost)
+yarn android
 yarn start
 ```
 

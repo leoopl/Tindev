@@ -8,16 +8,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+import io from 'socket.io-client';
 import api from '../services/api';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import logo from '../assets/logo.png';
 import like from '../assets/like.png';
 import dislike from '../assets/dislike.png';
+import itsamatch from '../assets/itsamatch.png';
 
 export default function Main({navigation}) {
   const id = navigation.getParam('user');
   const [users, setUsers] = useState([]);
+  const [match, setMatch] = useState(true);
 
   useEffect(() => {
     async function loadUsers() {
@@ -29,6 +32,16 @@ export default function Main({navigation}) {
       setUsers(response.data);
     }
     loadUsers();
+  }, [id]);
+
+  useEffect(() => {
+    const socket = io('http://localhost:3333', {
+      query: {user: id},
+    });
+
+    socket.on('match', dev => {
+      setMatch(dev);
+    });
   }, [id]);
 
   async function handleLike() {
@@ -52,6 +65,7 @@ export default function Main({navigation}) {
     navigation.navigate('Login');
   }
 
+  //FIXME: View do ItsaMatch esta sendo sobreposta pelo card dos usuarios :( não tenho a menor ideia do pq
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity onPress={handleLogout}>
@@ -92,6 +106,25 @@ export default function Main({navigation}) {
           </TouchableOpacity>
         </View>
       )}
+      {match && (
+        <View style={styles.matchContainer}>
+          <Image style={styles.matchImage} source={itsamatch} />
+          <Image
+            style={styles.matchAvatar}
+            source={{
+              uri: match.avatar,
+            }}
+          />
+          <Text style={styles.matchName}>{match.name}</Text>
+          <Text style={styles.matchBio}>{match.bio}</Text>
+          <TouchableOpacity
+            onPress={() => {
+              setMatch(null);
+            }}>
+            <Text style={styles.closeMatch}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -111,6 +144,12 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     justifyContent: 'center',
     maxHeight: 500,
+  },
+  matchContainer: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
     borderWidth: 1,
@@ -169,6 +208,38 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#999',
     fontSize: 24,
+    fontWeight: 'bold',
+  },
+  matchImage: {
+    height: 60,
+    resizeMode: 'contain',
+  },
+  matchAvatar: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    borderWidth: 5,
+    borderColor: '#FFF',
+    marginVertical: 30,
+  },
+  matchName: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  matchBio: {
+    marginTop: 10,
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
+    lineHeight: 24,
+    textAlign: 'center',
+    paddingHorizontal: 30,
+  },
+  closeMatch: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
+    marginTop: 30,
     fontWeight: 'bold',
   },
 });
