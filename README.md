@@ -2,8 +2,6 @@
 
 Criado para aprendizado e estudo com intuito demonstrar uma breve simulação da rede social Tinder com api do github.
 
-Projeto realizado na OmniStack
-
 ## 🚀 Rodando Tinder dos Dev
 
 ```
